@@ -19,10 +19,10 @@ const GHOST_COLORS = [
 ]
 
 const GHOST_INITIAL_POS = [
-  [2, 0, -17],
-  [-2, 0, -17],
-  [2, 0, -14],
-  [-2, 0, -14],
+  [6, 0, -14],
+  [-6, 0, -14],
+  [10, 0, -14],
+  [-10, 0, -14],
 ]
 
 const pathfinding = new Pathfinding();
@@ -80,7 +80,7 @@ loadNavMesh()
 loadSky()
 animate()
 checkInputs()
-setInterval(moveGhost, 500)
+setInterval(moveGhost, 1000)
 
 
 function sleep(ms) {
@@ -312,13 +312,13 @@ function loadGhost (i) {
         child.castShadow = true
       }
     })
-    ghost.position.set(0, 0.1, -6.5)
+    ghost.position.set(GHOST_INITIAL_POS[i][0], GHOST_INITIAL_POS[i][1], GHOST_INITIAL_POS[i][2])
     scene.add(ghost)
 
     const ghostShape = new CANNON.Sphere(1)
     const ghostBody = new CANNON.Body({
       mass: 1,
-      position: new CANNON.Vec3(0, 0.1, -6.5),
+      position: new CANNON.Vec3(GHOST_INITIAL_POS[i][0], GHOST_INITIAL_POS[i][1], GHOST_INITIAL_POS[i][2]),
       shape: ghostShape,
     })
 
@@ -338,9 +338,7 @@ function moveGhost () {
     const closestPacman = pathfinding.getClosestNode( pacmanDummy.position, ZONE, pacGroupdId )
     if(closestTargetNode && closestPacman) {
       navpath[i] = pathfinding.findPath(closestTargetNode.centroid, closestPacman.centroid, ZONE, groupID)
-    } else {
-      if(navpath[i].length < 5) navpath[i] = []
-    }
+    } 
     i++
   }
 }
@@ -385,7 +383,7 @@ function animate() {
 
   if (world) world.step(1 / 60, deltaTime, 3);
 
-  if(navpath && navpath.length > 0){
+  if(navpath && navpath.length > 0 && ghostsBody.length > 0 && dummy.length > 0){
     for(let i = 0; i < NUM_GHOST; i++) {
       const nav = navpath[i]
       if(!nav || nav.length === 0) continue
@@ -394,7 +392,8 @@ function animate() {
       
       if (distance.lengthSq() > 0.05 * 0.05) {
         distance.normalize();
-        dummy[i].position.add( distance.multiplyScalar( deltaTime * speedG * 0.1 ) );
+        ghostsBody[i].position.x += speedG * distance.x * 1.2
+        ghostsBody[i].position.z += speedG * distance.z *1.2
       } else {
         navpath.shift();
       }
@@ -403,7 +402,7 @@ function animate() {
   
   if(ghostsBody.length > 0 && ghosts.length > 0 && dummy.length > 0){
     for(let i = 0; i < NUM_GHOST; i++) {
-      ghostsBody[i].position.copy({ x: dummy[i].position.x, y: dummy[i].position.y, z: dummy[i].position.z })
+      dummy[i].position.copy({ x: ghostsBody[i].position.x, y: 0, z: ghostsBody[i].position.z })
       ghosts[i].position.copy({ x: ghostsBody[i].position.x, y: ghostsBody[i].position.y, z: ghostsBody[i].position.z })
     }
   }
