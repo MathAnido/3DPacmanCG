@@ -4,10 +4,13 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { Colors } from './colors.js'
 import * as CANNON from 'cannon-es'
 import { WALLS } from './walls.js'
+import { Pathfinding, PathfindingHelper } from 'three-pathfinding'
 const SPOTLIGHT_HELPER_TOGGLE = false
 const WALL_HELPER = false
 const AXES_HELPER = false
 const NUM_GHOST = 4
+const SHOW_DUMMY = false
+const SHOW_NAVMESH = true
 const GHOST_COLORS = [
   0x841818,
   0x173b0f,
@@ -15,6 +18,15 @@ const GHOST_COLORS = [
   0x3897f5
 ]
 
+const GHOST_INITIAL_POS = [
+  [2, 0, -17],
+  [-2, 0, -17],
+  [2, 0, -14],
+  [-2, 0, -14],
+]
+
+const pathfinding = new Pathfinding();
+const pathfindinghelper = new PathfindingHelper();
 
 let scene
 let camera
@@ -25,16 +37,27 @@ let mixer
 let gltfAnimations
 let keysPressed = []
 let speed = 0.05
+let speedG = 0.035
 let clock = new THREE.Clock()
 let oldElapsedTime = 0
 let world
 let worldMap
 let pacman
 let ghosts = []
+let ghostsBody = []
+
 let controls
 let wallsBody = []
-let xDir = 1
-let zDir = 0
+//navigation
+const ZONE = 'level1'
+let navMesh
+let groupID
+let navpath = []
+for(let i = 0; i < NUM_GHOST; i++) navpath.push([])
+let pacmanDummy
+let dummy = []
+
+
 const squareSize = 1/2
 
 const spotLights = []
@@ -51,11 +74,14 @@ loadWorld()
 loadWalls()
 loadPacman()
 for(let i = 0; i < NUM_GHOST; i++) {
-  loadGhost()
+  loadGhost(i)
 }
+loadNavMesh()
 loadSky()
 animate()
 checkInputs()
+setInterval(moveGhost, 500)
+
 
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -171,12 +197,32 @@ function loadWorld() {
   })
 }
 
+function loadNavMesh() {
+  scene.add(pathfindinghelper)
+  const loader = new GLTFLoader()
+  loader.load('../../assets/navMesh/navMesh.gltf', (gltf) => {
+    gltf.scene.traverse((node) => {
+      if (node.isMesh) {
+        navMesh = node
+        navMesh.scale.set(1.2, 1.2, 1.2)
+        navMesh.position.y = 1.5
+        navMesh.position.z = 0.8
+        const zone = Pathfinding.createZone(navMesh.geometry)
+        pathfinding.setZoneData(ZONE, zone)
+        if(SHOW_NAVMESH) {
+          scene.add(navMesh)
+        }
+      }
+    })
+  })
+}
+
 function loadWalls () {
   for(const wall of WALLS) {
     if(WALL_HELPER) {
       const planeGeometry = new THREE.BoxGeometry(wall.height*squareSize*2, wall.width*squareSize*2, wall.length*squareSize*2)
       const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, side: THREE.DoubleSide })
-            const plane = new THREE.Mesh( planeGeometry, planeMaterial )
+      const plane = new THREE.Mesh( planeGeometry, planeMaterial )
       plane.rotation.x = -Math.PI / 2
       plane.receiveShadow = true
       plane.position.x = wall.x * squareSize
@@ -210,6 +256,21 @@ function startAnimation() {
   allActions[0].play()
 }
 
+function createDummy(x, y, z) {
+  let d
+  const planeGeometry = new THREE.BoxGeometry(2, 100, 2)
+  const planeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff, side: THREE.DoubleSide })
+  d = new THREE.Mesh( planeGeometry, planeMaterial )
+  d.position.x = x
+  d.position.y = y
+  d.position.z = z
+  if(SHOW_DUMMY) {
+    scene.add(d)
+  }
+  return d
+}
+
+
 function loadPacman () {
   const loader = new GLTFLoader()
   loader.load('../../assets/pacman/scene.gltf', (gltf) => {
@@ -222,7 +283,6 @@ function loadPacman () {
         child.castShadow = true
       }
     })
-    //pacman.rotation.x = Math.PI /2
     startAnimation()
     scene.add(pacman)
 
@@ -237,13 +297,13 @@ function loadPacman () {
 
     spotLights[0].target = pacman
   })
+  pacmanDummy = createDummy(0, 0, 0)
 }
 
-function loadGhost () {
+function loadGhost (i) {
   const loader = new GLTFLoader()
   let ghost
   loader.load('../../assets/ghost/scene.gltf', (gltf) => {
-    gltfAnimations = gltf.animations
     ghost = gltf.scene
     ghost.scale.set(0.05, 0.05, 0.05)
     ghost.traverse((child) => {
@@ -252,7 +312,6 @@ function loadGhost () {
         child.castShadow = true
       }
     })
-    startAnimation()
     ghost.position.set(0, 0.1, -6.5)
     scene.add(ghost)
 
@@ -264,8 +323,26 @@ function loadGhost () {
     })
 
     world.addBody(ghostBody)
-    ghosts.push(ghostBody)
+    ghostsBody.push(ghostBody)
+    ghosts.push(ghost)
   })
+  dummy.push(createDummy(GHOST_INITIAL_POS[i][0], GHOST_INITIAL_POS[i][1], GHOST_INITIAL_POS[i][2]))
+}
+
+function moveGhost () {
+  let i = 0;
+  for(const d of dummy) {
+    groupID = pathfinding.getGroup(ZONE, d.position)
+    const closestTargetNode = pathfinding.getClosestNode( d.position, ZONE, groupID )
+    const pacGroupdId = pathfinding.getGroup(ZONE, pacmanDummy.position)
+    const closestPacman = pathfinding.getClosestNode( pacmanDummy.position, ZONE, pacGroupdId )
+    if(closestTargetNode && closestPacman) {
+      navpath[i] = pathfinding.findPath(closestTargetNode.centroid, closestPacman.centroid, ZONE, groupID)
+    } else {
+      if(navpath[i].length < 5) navpath[i] = []
+    }
+    i++
+  }
 }
 
 function checkInputs() {
@@ -308,10 +385,36 @@ function animate() {
 
   if (world) world.step(1 / 60, deltaTime, 3);
 
+  if(navpath && navpath.length > 0){
+    for(let i = 0; i < NUM_GHOST; i++) {
+      const nav = navpath[i]
+      if(!nav || nav.length === 0) continue
+      let targetPosition = nav[ 0 ]
+      const distance = targetPosition.clone().sub( dummy[i].position );
+      
+      if (distance.lengthSq() > 0.05 * 0.05) {
+        distance.normalize();
+        dummy[i].position.add( distance.multiplyScalar( deltaTime * speedG * 0.1 ) );
+      } else {
+        navpath.shift();
+      }
+    }    
+  }
+  
+  if(ghostsBody.length > 0 && ghosts.length > 0){
+    for(let i = 0; i < NUM_GHOST; i++) {
+      ghostsBody[i].position.copy({ x: dummy[i].position.x, y: dummy[i].position.y, z: dummy[i].position.z })
+      ghosts[i].position.copy({ x: ghostsBody[i].position.x, y: ghostsBody[i].position.y, z: ghostsBody[i].position.z })
+    }
+  }
+
   if (pacman && worldMap && pacmanBody) {
     pacmanBody.position.x += speed * Math.sin(pacman.rotation.y)
     pacmanBody.position.z += speed * Math.cos(pacman.rotation.y)
-    if (pacmanBody) pacman.position.copy({ x: pacmanBody.position.x, y: pacmanBody.position.y, z: pacmanBody.position.z })
+    if (pacmanBody) {
+      pacman.position.copy({ x: pacmanBody.position.x, y: pacmanBody.position.y, z: pacmanBody.position.z })
+      pacmanDummy.position.copy({ x: pacmanBody.position.x, y: 0, z: pacmanBody.position.z })
+    }
 
     if(pacman.position.x >= 17) {
       pacmanBody.position.x = -16
