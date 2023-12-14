@@ -1,63 +1,63 @@
 {
   "asset": {
     "extras": {
-      "author": "Izzy (https://sketchfab.com/RigiT)",
-      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
-      "source": "https://sketchfab.com/3d-models/3december-day-1-maze-9516f4cf1c244837b2b072b40eab3f2e",
-      "title": "3December - Day 1 - Maze"
+      "author": "binrong (https://sketchfab.com/binrong)",
+      "license": "CC-BY-NC-4.0 (http://creativecommons.org/licenses/by-nc/4.0/)",
+      "source": "https://sketchfab.com/3d-models/day01-pacman-maze-5927d0dcbd4a4cf5a65d8699e862ef48",
+      "title": "DAY01: PACMAN MAZE"
     },
-    "generator": "Sketchfab-12.65.0",
+    "generator": "Sketchfab-12.67.0",
     "version": "2.0"
   },
   "buffers": [
     {
       "uri": "Sketchfab_Scene.bin",
-      "byteLength": 209184
+      "byteLength": 456
     },
     {
       "uri": "Sketchfab_1.bin",
-      "byteLength": 715224
+      "byteLength": 100360
     }
   ],
   "bufferViews": [
     {
       "buffer": 0,
       "byteOffset": 0,
-      "byteLength": 127728,
+      "byteLength": 288,
       "byteStride": 24,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 127728,
-      "byteLength": 42576,
+      "byteOffset": 288,
+      "byteLength": 96,
       "byteStride": 8,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 170304,
-      "byteLength": 38880,
+      "byteOffset": 384,
+      "byteLength": 72,
       "target": 34963
     },
     {
       "buffer": 1,
       "byteOffset": 0,
-      "byteLength": 451728,
+      "byteLength": 55848,
       "byteStride": 24,
       "target": 34962
     },
     {
       "buffer": 1,
-      "byteOffset": 451728,
-      "byteLength": 150576,
+      "byteOffset": 55848,
+      "byteLength": 18616,
       "byteStride": 8,
       "target": 34962
     },
     {
       "buffer": 1,
-      "byteOffset": 602304,
-      "byteLength": 112920,
+      "byteOffset": 74464,
+      "byteLength": 25896,
       "target": 34963
     }
   ],
@@ -67,14 +67,14 @@
       "byteOffset": 0,
       "componentType": 5126,
       "normalized": false,
-      "count": 5322,
+      "count": 12,
       "min": [
+        0,
         -1,
-        -1,
-        -1
+        0
       ],
       "max": [
-        1,
+        0,
         1,
         1
       ],
@@ -85,16 +85,16 @@
       "byteOffset": 12,
       "componentType": 5126,
       "normalized": false,
-      "count": 5322,
+      "count": 12,
       "min": [
-        -1.149999976158142,
-        -1.1500000953674316,
-        -1.149999976158142
+        -0.12849999964237213,
+        0.46720001101493835,
+        0
       ],
       "max": [
-        1.149999976158142,
-        1.1500000953674316,
-        1.149999976158142
+        0.12849999964237213,
+        0.5,
+        0.20000000298023224
       ],
       "type": "VEC3"
     },
@@ -103,14 +103,14 @@
       "byteOffset": 0,
       "componentType": 5126,
       "normalized": false,
-      "count": 5322,
+      "count": 12,
       "min": [
-        0,
-        0
+        0.12449999898672104,
+        0.014800000004470348
       ],
       "max": [
-        1,
-        1
+        0.6301000118255615,
+        0.9882000088691711
       ],
       "type": "VEC2"
     },
@@ -119,12 +119,12 @@
       "byteOffset": 0,
       "componentType": 5125,
       "normalized": false,
-      "count": 9720,
+      "count": 18,
       "min": [
         0
       ],
       "max": [
-        5321
+        11
       ],
       "type": "SCALAR"
     },
@@ -133,16 +133,16 @@
       "byteOffset": 0,
       "componentType": 5126,
       "normalized": false,
-      "count": 18822,
+      "count": 2327,
       "min": [
         -1,
-        -0.9591889381408691,
-        -0.9591899514198303
+        -1,
+        0
       ],
       "max": [
         1,
-        0.953882098197937,
-        0.9604457020759583
+        1,
+        1
       ],
       "type": "VEC3"
     },
@@ -151,16 +151,16 @@
       "byteOffset": 12,
       "componentType": 5126,
       "normalized": false,
-      "count": 18822,
+      "count": 2327,
       "min": [
-        -1.1521339416503906,
-        -1.1517677307128906,
-        -1.1516056060791016
+        -1.7360999584197998,
+        -1.7416000366210938,
+        0
       ],
       "max": [
-        1.1521339416503906,
-        1.1517677307128906,
-        1.1516056060791016
+        1.7360999584197998,
+        2.066699981689453,
+        0.20000000298023224
       ],
       "type": "VEC3"
     },
@@ -169,14 +169,14 @@
       "byteOffset": 0,
       "componentType": 5126,
       "normalized": false,
-      "count": 18822,
+      "count": 2327,
       "min": [
-        0,
-        0
+        0.0005000000237487257,
+        0.0005000000237487257
       ],
       "max": [
-        1,
-        1
+        0.9918000102043152,
+        0.9994999766349792
       ],
       "type": "VEC2"
     },
@@ -185,12 +185,12 @@
       "byteOffset": 0,
       "componentType": 5125,
       "normalized": false,
-      "count": 28230,
+      "count": 6474,
       "min": [
         0
       ],
       "max": [
-        18821
+        2326
       ],
       "type": "SCALAR"
     }
@@ -199,90 +199,34 @@
   "scenes": [
     {
       "nodes": [
-        6
+        4
       ],
       "name": "Sketchfab_Scene"
     }
   ],
   "nodes": [
     {
-      "name": "Object_4",
+      "name": "Object_2"
+    },
+    {
+      "name": "Object_3",
       "mesh": 0
     },
     {
-      "name": "Maze_0",
-      "children": [
-        0
-      ],
-      "matrix": [
-        2,
-        0,
-        0,
-        0,
-        0,
-        2,
-        0,
-        0,
-        0,
-        0,
-        2,
-        0,
-        0,
-        0,
-        -0.8884430527687073,
-        1
-      ]
-    },
-    {
-      "name": "Object_10",
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        -0.0003661513328552246,
-        0,
-        0.0001621842384338379,
-        1
-      ],
+      "name": "Object_4",
       "mesh": 1
     },
     {
-      "name": "Maze Border_4",
+      "name": "MAZE.obj.cleaner.materialmerger.gles",
       "children": [
+        0,
+        1,
         2
-      ],
-      "matrix": [
-        2,
-        0,
-        0,
-        0,
-        0,
-        2,
-        0,
-        0,
-        0,
-        0,
-        2,
-        0,
-        0,
-        0,
-        -0.8884430527687073,
-        1
       ]
     },
     {
-      "name": "GLTF_SceneRootNode",
+      "name": "Sketchfab_model",
       "children": [
-        1,
         3
       ],
       "matrix": [
@@ -292,36 +236,6 @@
         0,
         0,
         3.422854177870249e-8,
-        0.9999999403953552,
-        0,
-        0,
-        -0.9999999403953552,
-        3.422854177870249e-8,
-        0,
-        0,
-        0,
-        0,
-        1
-      ]
-    },
-    {
-      "name": "root",
-      "children": [
-        4
-      ]
-    },
-    {
-      "name": "Sketchfab_model",
-      "children": [
-        5
-      ],
-      "matrix": [
-        1,
-        0,
-        0,
-        0,
-        0,
-        3.422854177870249e-8,
         -0.9999999403953552,
         0,
         0,
@@ -330,7 +244,7 @@
         0,
         0,
         0,
-        0.9268887042999268,
+        0,
         1
       ]
     }
@@ -367,16 +281,16 @@
   ],
   "materials": [
     {
-      "name": "Maze",
+      "name": "door",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          0,
-          0,
-          0.00784313725490196,
+          1,
+          1,
+          1,
           1
         ],
-        "metallicFactor": 0,
-        "roughnessFactor": 0.414894
+        "metallicFactor": 1,
+        "roughnessFactor": 0
       },
       "emissiveFactor": [
         0,
@@ -387,21 +301,21 @@
       "doubleSided": true
     },
     {
-      "name": "Maze_Highlights",
+      "name": "maze",
       "pbrMetallicRoughness": {
         "baseColorFactor": [
-          1,
-          1,
-          1,
+          0,
+          0.07058823529411765,
+          0.5882352941176471,
           1
         ],
         "metallicFactor": 1,
-        "roughnessFactor": 1
+        "roughnessFactor": 0
       },
       "emissiveFactor": [
         0,
-        1,
-        1
+        0,
+        0
       ],
       "alphaMode": "OPAQUE",
       "doubleSided": true
