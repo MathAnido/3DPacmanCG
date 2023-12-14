@@ -10,7 +10,7 @@ const WALL_HELPER = false
 const AXES_HELPER = false
 const NUM_GHOST = 4
 const SHOW_DUMMY = false
-const SHOW_NAVMESH = true
+const SHOW_NAVMESH = false
 const GHOST_COLORS = [
   0x841818,
   0x173b0f,
@@ -401,7 +401,7 @@ function animate() {
     }    
   }
   
-  if(ghostsBody.length > 0 && ghosts.length > 0){
+  if(ghostsBody.length > 0 && ghosts.length > 0 && dummy.length > 0){
     for(let i = 0; i < NUM_GHOST; i++) {
       ghostsBody[i].position.copy({ x: dummy[i].position.x, y: dummy[i].position.y, z: dummy[i].position.z })
       ghosts[i].position.copy({ x: ghostsBody[i].position.x, y: ghostsBody[i].position.y, z: ghostsBody[i].position.z })
